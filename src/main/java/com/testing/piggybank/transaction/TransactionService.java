@@ -28,9 +28,7 @@ public class TransactionService {
     private final AccountService accountService;
 
     @Autowired
-    public TransactionService(final TransactionRepository transactionRepository,
-                              final CurrencyConverterService converterService,
-                              final AccountService accountService) {
+    public TransactionService(final TransactionRepository transactionRepository, final CurrencyConverterService converterService, final AccountService accountService) {
         this.transactionRepository = transactionRepository;
         this.converterService = converterService;
         this.accountService = accountService;
@@ -48,10 +46,7 @@ public class TransactionService {
         final List<Transaction> result = new ArrayList<>();
         transactionRepository.findAll().forEach(result::add);
 
-        return filterAndLimitTransactions(result, accountId, limit)
-                .stream()
-                .sorted(TransactionService::sortDescByDateTime)
-                .toList();
+        return filterAndLimitTransactions(result, accountId, limit).stream().sorted(TransactionService::sortDescByDateTime).toList();
     }
 
     /**
@@ -64,10 +59,7 @@ public class TransactionService {
      */
     public List<Transaction> filterAndLimitTransactions(final List<Transaction> transactions, final long accountId, final Integer limit) {
         // Get all transactions that belong to this accountId.
-        final List<Transaction> transactionsForAccount = transactions
-                .stream()
-                .filter(transaction -> transaction.getReceiverAccount().getId() == accountId || transaction.getSenderAccount().getId() == accountId)
-                .toList();
+        final List<Transaction> transactionsForAccount = transactions.stream().filter(transaction -> transaction.getReceiverAccount().getId() == accountId || transaction.getSenderAccount().getId() == accountId).toList();
 
         // No transactions left for account.
         if (transactionsForAccount.size() == 0) {
@@ -105,12 +97,12 @@ public class TransactionService {
         // Save the transaction.
         transactionRepository.save(transaction);
     }
-    
+
     public static int sortDescByDateTime(final Transaction t1, final Transaction t2) {
         return t2.getDateTime().compareTo(t1.getDateTime());
     }
 
-    private Transaction mapRequestToTransaction(final CreateTransactionRequest request) {
+    Transaction mapRequestToTransaction(final CreateTransactionRequest request) {
         // Find the accounts that belong to given ID's
         final Account senderAccount = accountService.getAccount(request.getSenderAccountId()).orElseThrow(RuntimeException::new);
         final Account receiverAccount = accountService.getAccount(request.getReceiverAccountId()).orElseThrow(RuntimeException::new);

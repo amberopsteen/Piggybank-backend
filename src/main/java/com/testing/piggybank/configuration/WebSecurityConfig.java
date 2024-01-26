@@ -14,7 +14,7 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    // Disable cors for testing purpose. Do not use in production.
+    // Disable cors for testing-piggybank.cy.js purpose. Do not use in production.
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(request -> {
